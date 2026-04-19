@@ -18,6 +18,9 @@ class StatusScreen extends StatelessWidget {
             leading: const CircleAvatar(backgroundColor: Colors.green, child: Icon(Icons.add, color: Colors.white)),
             title: const Text('Statusi im'),
             subtitle: const Text('Tap për të postuar'),
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Krijo statusin tënd të parë!')));
+            },
           ),
           Expanded(
             child: ListView.builder(

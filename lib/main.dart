@@ -20,6 +20,24 @@ class ChatApp extends StatefulWidget {
 class _ChatAppState extends State<ChatApp> {
   UserProfile? _currentUser;
 
+  @override
+  void initState() {
+    super.initState();
+    _currentUser = _loadSavedUser();
+  }
+
+  UserProfile? _loadSavedUser() {
+    final savedUser = Hive.box('messages_db').get('current_user');
+    if (savedUser == null) return null;
+    return UserProfile.fromMap(Map<dynamic, dynamic>.from(savedUser as Map));
+  }
+
+  void _persistCurrentUser() {
+    if (_currentUser != null) {
+      Hive.box('messages_db').put('current_user', _currentUser!.toMap());
+    }
+  }
+
   void _signIn(String email) {
     final displayName = _formatNameFromEmail(email);
     setState(() {
@@ -29,6 +47,7 @@ class _ChatAppState extends State<ChatApp> {
         status: 'Available',
         avatarColor: Colors.teal.shade700,
       );
+      _persistCurrentUser();
     });
   }
 
@@ -39,6 +58,7 @@ class _ChatAppState extends State<ChatApp> {
           displayName: name.isEmpty ? _currentUser!.displayName : name,
           status: status.isEmpty ? _currentUser!.status : status,
         );
+        _persistCurrentUser();
       }
     });
   }
@@ -65,7 +85,10 @@ class _ChatAppState extends State<ChatApp> {
           : HomeScreen(
               currentUser: _currentUser!,
               onProfileUpdate: _updateProfile,
-              onLogout: () => setState(() => _currentUser = null),
+              onLogout: () {
+                Hive.box('messages_db').delete('current_user');
+                setState(() => _currentUser = null);
+              },
             ),
     );
   }

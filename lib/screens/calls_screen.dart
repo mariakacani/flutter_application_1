@@ -20,7 +20,12 @@ class CallsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Thirrje'),
         actions: [
-          IconButton(icon: const Icon(Icons.message), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.message),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Shkruaj një mesazh të ri me kontaktin.')));
+            },
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

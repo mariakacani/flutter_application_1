@@ -7,11 +7,13 @@ class ChatDrawer extends StatelessWidget {
     super.key,
     required this.user,
     required this.onUpdateProfile,
+    required this.onEditProfile,
     required this.onLogout,
   });
 
   final UserProfile user;
   final void Function(String name, String status) onUpdateProfile;
+  final VoidCallback onEditProfile;
   final VoidCallback onLogout;
 
   @override
@@ -39,7 +41,7 @@ class ChatDrawer extends StatelessWidget {
                 Text(user.status, style: const TextStyle(fontSize: 14, color: Colors.white70)),
                 const SizedBox(height: 8),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: onEditProfile,
                   style: TextButton.styleFrom(foregroundColor: Colors.white),
                   child: const Text('Ndrysho profilin'),
                 ),

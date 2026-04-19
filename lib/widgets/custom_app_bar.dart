@@ -11,6 +11,7 @@ class CustomChatAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onCall,
     this.onVideo,
     this.onBack,
+    this.onMenuSelected,
   });
 
   final String title;
@@ -20,6 +21,7 @@ class CustomChatAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onCall;
   final VoidCallback? onVideo;
   final VoidCallback? onBack;
+  final void Function(String)? onMenuSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class CustomChatAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       title: Row(
         children: [
-          CircleAvatar(radius: 20, backgroundColor: avatarColor, child: Text(initials, style: const TextStyle(fontWeight: FontWeight.bold))),
+          CircleAvatar(radius: 20, backgroundColor: avatarColor, child: Text(initials, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white))),
           const SizedBox(width: 12),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
@@ -41,9 +43,8 @@ class CustomChatAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(icon: const Icon(Icons.videocam), onPressed: onVideo),
         IconButton(icon: const Icon(Icons.call), onPressed: onCall),
         PopupMenuButton<String>(
-          // ignore: avoid_print
-          onSelected: (value) => print('Action: $value'),
-          itemBuilder: (context) => ['Search', 'View contact', 'Media', 'Mute'].map((e) => PopupMenuItem(value: e, child: Text(e))).toList(),
+          onSelected: onMenuSelected ?? (_) {},
+          itemBuilder: (context) => ['Search', 'View contact', 'Mute'].map((e) => PopupMenuItem(value: e, child: Text(e))).toList(),
         ),
       ],
     );

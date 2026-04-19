@@ -33,6 +33,24 @@ class UserProfile {
   }
 
   String get firstName => displayName.split(' ').first;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'email': email,
+      'displayName': displayName,
+      'status': status,
+      'avatarColor': avatarColor.value,
+    };
+  }
+
+  factory UserProfile.fromMap(Map<dynamic, dynamic> map) {
+    return UserProfile(
+      email: map['email'] as String,
+      displayName: map['displayName'] as String,
+      status: map['status'] as String,
+      avatarColor: Color(map['avatarColor'] as int),
+    );
+  }
 }
 
 class ChatRoom {
@@ -82,6 +100,34 @@ class ChatRoom {
     return parts.map((part) => part.isEmpty ? '' : part[0]).take(2).join().toUpperCase();
   }
 
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'subtitle': subtitle,
+      'lastMessage': lastMessage,
+      'updatedAt': updatedAt,
+      'avatarColor': avatarColor.value,
+      'unreadCount': unreadCount,
+      'messages': messages.map((message) => message.toMap()).toList(),
+    };
+  }
+
+  factory ChatRoom.fromMap(Map<dynamic, dynamic> map) {
+    return ChatRoom(
+      id: map['id'] as String,
+      name: map['name'] as String,
+      subtitle: map['subtitle'] as String,
+      lastMessage: map['lastMessage'] as String,
+      updatedAt: map['updatedAt'] as String,
+      avatarColor: Color(map['avatarColor'] as int),
+      unreadCount: map['unreadCount'] as int,
+      messages: List<ChatMessage>.from(
+        (map['messages'] as List).map((item) => ChatMessage.fromMap(Map<dynamic, dynamic>.from(item as Map))),
+      ),
+    );
+  }
+
   static List<ChatRoom> sampleRooms() {
     return [
       ChatRoom(
@@ -92,7 +138,10 @@ class ChatRoom {
         updatedAt: 'Tani',
         avatarColor: Colors.pink.shade400,
         unreadCount: 2,
-        messages: const [],
+        messages: const [
+          ChatMessage(text: 'Pershendetje! Si po shkon dita jote?', time: '14:20', isMe: false),
+          ChatMessage(text: 'Mirë, faleminderit! Ti?', time: '14:22', isMe: true),
+        ],
       ),
       ChatRoom(
         id: 'room2',
@@ -102,7 +151,10 @@ class ChatRoom {
         updatedAt: '17:18',
         avatarColor: Colors.orange.shade400,
         unreadCount: 4,
-        messages: const [],
+        messages: const [
+          ChatMessage(text: 'A jeni gati për drekën e mbrëmshme?', time: '16:58', isMe: false),
+          ChatMessage(text: 'Po, jam duke ardhur!', time: '17:00', isMe: true),
+        ],
       ),
       ChatRoom(
         id: 'room3',
@@ -112,7 +164,10 @@ class ChatRoom {
         updatedAt: '16:35',
         avatarColor: Colors.green.shade400,
         unreadCount: 0,
-        messages: const [],
+        messages: const [
+          ChatMessage(text: 'Kam përgatitur versionin e ri të prezentimit.', time: '16:30', isMe: false),
+          ChatMessage(text: 'E shikoj tani dhe ju kthehem.', time: '16:33', isMe: true),
+        ],
       ),
     ];
   }

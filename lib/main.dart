@@ -1,7 +1,7 @@
-﻿
-import 'package:flutter/material.dart';
-import 'package:flutter_application_1/models/models.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'screens/home_screen.dart';
+import 'models/models.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +19,6 @@ class ChatApp extends StatefulWidget {
 
 class _ChatAppState extends State<ChatApp> {
   UserProfile? _currentUser;
-  final List<ChatRoom> _chatRooms = ChatRoom.sampleRooms();
 
   void _signIn(String email) {
     final displayName = _formatNameFromEmail(email);
@@ -42,50 +41,6 @@ class _ChatAppState extends State<ChatApp> {
         );
       }
     });
-  }
-
-  void _sendMessage(String roomId, ChatMessage message) {
-    final roomIndex = _chatRooms.indexWhere((room) => room.id == roomId);
-    if (roomIndex < 0) return;
-
-    final room = _chatRooms[roomIndex];
-    final updatedMessages = [...room.messages, message];
-    _saveRoomMessages(roomId, updatedMessages);
-
-    setState(() {
-      _chatRooms[roomIndex] = room.copyWith(
-        messages: updatedMessages,
-        lastMessage: message.sticker != null
-            ? 'Sticker'
-            : message.isVoice
-                ? 'Mesazh zanor'
-                : message.text,
-        updatedAt: message.time,
-        unreadCount: 0,
-      );
-    });
-  }
-
-  void _addContact(String name, String subtitle) {
-    final newRoom = ChatRoom(
-      id: 'room_${DateTime.now().millisecondsSinceEpoch}',
-      name: name,
-      subtitle: subtitle,
-      lastMessage: 'Bisedë e re',
-      updatedAt: 'Tani',
-      avatarColor: Colors.purple.shade300,
-      unreadCount: 0,
-      messages: const [],
-    );
-
-    setState(() {
-      _chatRooms.insert(0, newRoom);
-    });
-  }
-
-  void _saveRoomMessages(String roomId, List<ChatMessage> messages) {
-    final box = Hive.box('messages_db');
-    box.put(roomId, messages.map((m) => m.toMap()).toList());
   }
 
   @override
@@ -212,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                                 return 'Shkruani një adresë email të vlefshme';
                               }
                               return null;
-                            },
+                              },
                           ),
                           const SizedBox(height: 24),
                           ElevatedButton(
@@ -769,7 +724,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         ),
                       ),
                     ),
-                  ),
+                    ),
                   const SizedBox(width: 12),
                   CircleAvatar(
                     radius: 26,
@@ -1067,3 +1022,4 @@ String _formattedTime(DateTime dateTime) {
   final minute = dateTime.minute.toString().padLeft(2, '0');
   return '$hour:$minute';
 }
+
